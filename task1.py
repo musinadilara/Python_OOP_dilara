@@ -3,18 +3,18 @@ class Product:
 
     """Класс, содержащий информацию о товаре."""
 
-    def __init__(self, name: str, sipher: str, quantity: int, ) -> None:
+    def __init__(self, _name: str = "Без названия", _code: str = "000", _quantity: int = 1) -> None:
 
         """Метод инициализации объекта класса.
 
         Args:
             name: наименование товара
-            sipher: шифр товара
+            code: шифр товара
             quantity: количество товара
         """
-        self.set_name(name)
-        self.set_sipher(sipher)
-        self.set_quantity(quantity)
+        self.set_name(_name)
+        self.set_code(_code)
+        self.set_quantity(_quantity)
 
 
     def set_name(self, name: str) -> None:
@@ -25,7 +25,11 @@ class Product:
             name: название товара
         """
 
-        self._name = name
+        if name:
+            self._name = name
+        else:
+
+            print("Имя не должно быть пустой строкой!\n")
 
 
     def get_name(self) -> str:
@@ -39,18 +43,21 @@ class Product:
         return self._name
 
 
-    def set_sipher(self, sipher: str) -> None:
+    def set_code(self, code: str) -> None:
 
         """Сеттер шифра товара.
 
         Args:
-            sipher: шифр товара
+            code: шифр товара
         """
+        if code:
+            self._code = code
+        else:
 
-        self._sipher = sipher
+            print("Шифр не должен быть пустой строкой!\n")
 
 
-    def get_sipher(self) -> str:
+    def get_code(self) -> str:
 
         """Геттер шифра товара.
 
@@ -58,7 +65,7 @@ class Product:
             str: шифр товара
         """
 
-        return self._sipher
+        return self._code
 
 
     def set_quantity(self, quantity: int) -> None:
@@ -69,17 +76,12 @@ class Product:
             quantity: количество товара
         """
 
-        if not isinstance(quantity, int):
+        if not isinstance(quantity, int) or quantity < 0:
 
-            raise ValueError("Количество должно быть целым числом")
+            print("Количество должно быть натуральным числом!\n")
 
-        if quantity < 0:
-
-            raise ValueError("Количество должно быть неотрицательным числом")
-
-        self._quantity = quantity
-
-        print('  Количество товара изменилось')
+        else:
+             self._quantity = quantity
 
 
     def get_quantity(self) -> int:
@@ -99,16 +101,9 @@ class Product:
 
         print(
             f'Название товара: {self.get_name()}\n'
-            f'Шифр товара: {self.get_sipher()}\n'
+            f'Шифр товара: {self.get_code()}\n'
             f'Количество товара: {self.get_quantity()}\n'
         )
-
-
-    def __str__(self):
-
-        """Вывод информации о товаре автоматически через print(экземпляр класса)."""
-
-        return f"Товар '{self._name}' шифр ({self._sipher}), количество: {self._quantity}."
 
 
     def add_product(self, quantity: int) -> None:
@@ -117,21 +112,15 @@ class Product:
 
         Args:
             quantity: количество товара (целое число > 0)
-
-        Raises:
-            ValueError: если quantity не целое или <= 0
         """
-        if not isinstance(quantity, int):
 
-            raise ValueError("Прибавка должна быть целым числом")
+        if not isinstance(quantity, int) or quantity < 0:
 
-        if quantity <= 0:
+                print("Прибавка должна быть целым неотрицательным числом!\n")
 
-            raise ValueError("Прибавка должна быть > 0")
+        else:
 
-        self._quantity += quantity
-
-        print(f'  Количество увеличилось на {quantity}')
+            self._quantity += quantity
 
 
     def remove_product(self, quantity: int) -> None:
@@ -142,117 +131,94 @@ class Product:
             quantity: количество товара
         """
 
-        if (self._quantity - quantity) >= 0:
+        if not isinstance(quantity, int) or quantity < 0:
 
-            self._quantity -= quantity
+            print("Убавка должна быть целым неотрицательным числом!\n")
+
+        elif (self._quantity - quantity) < 0:
+
+            print('У вас слишком мало товара!\n')
+
         else:
-
-            print('У вас слишком мало товара!')
-
-        print(f'  Количество уменьшилось на {quantity}')
+            self._quantity -= quantity
 
 
-    def is_available(self):
 
-        """Функция проверки наличия товара.
+class Menu:
 
-        Returns:
-            boll: ответ на вопрос о наличии товара
+    """Класс для взаимодействия с пользователем через консольное меню."""
+
+    def __init__(self, product: Product) -> None:
+
+        """Инициализация меню.
+
+        Args:
+            product: объект товара, с которым будет работать меню
         """
 
-        return self._quantity > 0
+        self._product = product
 
 
-    def menu(self):
+    def show_menu(self) -> None:
 
-        """Меню для работы с товаром.
+        """Вывод пунктов меню на экран."""
 
-        Показывает список действий, запрашивает выбор пользователя
-        и выполняет соответствующее действие над текущим объектом.
-        Работает до ввода команды "0" (выход).
-        """
+        print(
+            "МЕНЮ:\n"
+            "  1. Показать товар\n"
+            "  2. Изменить наименование\n"
+            "  3. Изменить шифр\n"
+            "  4. Изменить количество\n"
+            "  5. Прибавить количество\n"
+            "  6. Списать количество\n"
+            "  0. Выход"
+        )
 
+
+    def run(self) -> None:
+
+        """Основной цикл работы меню. Выход по команде '0'."""
+
+        end = False
         choice = ""
-        while choice != "0":
 
-            print("МЕНЮ:\n"
-                "  1. Показать товар\n"
-                "  2. Изменить наименование\n"
-                "  3. Изменить шифр\n"
-                "  4. Изменить количество\n"
-                "  5. Прибавить количество\n"
-                "  6. Списать количество\n"
-                "  7. Проверить наличие\n"
-                "  0. Выход"
-            )
+        while not end:
 
+            self.show_menu()
             choice = input("Выберите действие: ").strip()
 
-            try:
+            match choice:
+                case "0":
+                    print("Работа завершена. До свидания!")
+                    end = True
+                case "1":
+                    self._product.show_info()
+                case "2":
+                    self._product.set_name(input("  Новое наименование: "))
+                case "3":
+                    self._product.set_code(input("  Новый шифр: "))
+                case "4":
+                    self._product.set_quantity(int(input("  Новое количество (>0): ")))
+                case "5":
+                    self._product.add_product(int(input("  Сколько прибавить: ")))
+                case "6":
+                    self._product.remove_product(int(input("  На сколько уменьшить: ")))
+                case _:
 
-                if choice == "1":
-
-                    self.show_info()
-
-                elif choice == "2":
-
-                    self.set_name(input("  Новое наименование: "))
-
-                    print('  Название товара изменилось.\n')
-
-                elif choice == "3":
-
-                    self.set_sipher(input("  Новый шифр: "))
-
-                    print('  Шифр был изменен.\n')
-
-                elif choice == "4":
-
-                    self.set_quantity(int(input("  Новое количество (>0): ")))
-
-                elif choice == "5":
-
-                    self.add_product(int(input("  Сколько прибавить: ")))
-
-                elif choice == "6":
-
-                    self.remove_product(int(input("  На сколько уменьшить: ")))
-
-                elif choice == "7":
-
-                    print(f"  В наличии: {'да' if self.is_available() else 'нет'}\n")
-
-                elif choice != "0":
-
-                    print("Нет такого пункта, попробуйте снова.")
-
-            except ValueError as e:
-                print(f"  Ошибка: {e}")
-
-        print("Работа завершена. До свидания!")
+                    print("  Нет такого пункта, попробуйте снова.\n")
 
 
 
+product1 = Product()
+product1.set_name('Плюшевый кот')
+product1.set_code('R2-D2')
+product1.set_quantity(999)
+product1.show_info()
+product1.remove_product(1000)
+product1.remove_product(67)
+product1.show_info()
 
-if __name__ == "__main__":
-    product = Product("Ноутбук", "NB-001", 3)
-    product.menu()
+my_product = Product("Ноутбук", "NB-001", 3)
+my_menu = Menu(my_product)
+my_menu.run()
 
-'''
-    p2.show_info()
-
-    print(p2.get_name(), p2.get_sipher(), p2.get_quantity())
-    print(p2)
-
-    p2.set_quantity(15)
-    p2.show_info()
-
-    try:
-
-        p2.set_quantity(-5)
-
-    except ValueError as e:
-
-        print("Ошибка:", e)
-
-'''
