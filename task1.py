@@ -210,15 +210,10 @@ class Menu:
 
 
 product1 = Product()
-product1.set_name('Плюшевый кот')
-product1.set_code('R2-D2')
-product1.set_quantity(999)
+product2 = Product("Ноутбук", "R2-D2", 3)
 product1.show_info()
-product1.remove_product(1000)
-product1.remove_product(67)
-product1.show_info()
-
-my_product = Product("Ноутбук", "NB-001", 3)
-my_menu = Menu(my_product)
-my_menu.run()
-
+product2.show_info()
+menu1 = Menu(product1)
+menu2 = Menu(product2)
+menu1.run()
+menu2.run()
